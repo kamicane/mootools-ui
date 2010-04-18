@@ -83,7 +83,7 @@ var Button = ART.Button = new Class({
 		this.touch.addEvents({
 			
 			start: function(){
-				if (self.activate()) element.focus();
+				self.activate();
 			},
 			
 			end: function(){

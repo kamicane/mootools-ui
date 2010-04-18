@@ -40,10 +40,14 @@ var Widget = UI.Widget = new Class({
 		this.states = {disabled: false, focus: false, active: false};
 	},
 	
+	/* ID */
+	
 	setID: function(id){
 		this.id = id;
 		return this;
 	},
+	
+	/* classNames */
 	
 	addClass: function(className){
 		this.classNames.push(className);
@@ -64,28 +68,30 @@ var Widget = UI.Widget = new Class({
 	enable: function(){
 		var parentWidget = this.getParent();
 		if ((parentWidget && parentWidget.states.disabled) || !this.states.disabled) return false;
-		
+		this._disabledByParent = false;
 		this.states.disabled = false;
 		this.fireEvent('enable');
 		
-		this.getChildren().each(function(child){
+		this._childWidgets.each(function(child){
 			if (child._disabledByParent) child.enable();
 		});
 		
 		return true;
 	},
 	
-	disable: function(byParent){
+	disable: function(){
 		if (this.states.disabled) return false;
 		
-		this._disabledByParent = !!(byParent);
 		this.blur();
 		this.deactivate();
 		this.states.disabled = true;
 		this.fireEvent('disable');
 					
-		this.getChildren().each(function(child){
-			child.disable(true);
+		this._childWidgets.each(function(child){
+			if (!child.states.disabled){
+				child._disabledByParent = true;
+				child.disable();
+			}
 		});
 		
 		return true;
@@ -104,7 +110,7 @@ var Widget = UI.Widget = new Class({
 		
 		for (var w in widgets){
 			var widget = widgets[w];
-			if (widget != this && !this.getChildren().contains(widget)) widget.blur();
+			if (widget != this && !this._childWidgets.contains(widget)) widget.blur();
 		}
 		
 		return true;
@@ -116,7 +122,7 @@ var Widget = UI.Widget = new Class({
 		this.states.focus = false;
 		this.fireEvent('blur');
 		
-		this.getChildren().each(function(child){
+		this._childWidgets.each(function(child){
 			child.blur();
 		});
 		

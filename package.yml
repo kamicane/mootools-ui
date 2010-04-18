@@ -1,0 +1,19 @@
+name: "UI"
+
+web: "[mootools.net](http://mootools.net)"
+
+description: "User Interface Widgets"
+
+license: "[MIT License](http://mootools.net/license.txt)"
+
+copyright: "&copy; [MooTools](http://mootools.net)"
+
+authors: "[The MooTools development team](http://mootools.net/developers)"
+
+sources:
+  - "Source/UI.js"
+  - "Source/UI.Sheet.js"
+  - "Source/UI.Widget.js"
+  - "Source/ART.Widget.js"
+  - "Source/ART.Button.js"
+  - "Source/ART.Sheet.js"

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>UI ART Buttons</title>
+	
+	<!--[if IE]>
+	<script type="text/javascript" src="https://getfirebug.com/releases/lite/beta/firebug.jgz"></script>
+	<![endif]-->
+	
+	<style type="text/css">
+		
+		.button {
+			margin: 5px;
+			float: left;
+		}
+		
+	</style>
+	
+	<!-- compiled assets -->
+	
+	<script type="text/javascript" src="../Specs/assets/mootools.js"></script>
+	
+	<!-- this package -->
+	
+	<script type="text/javascript" src="../Source/UI.js"></script>
+	<script type="text/javascript" src="../Source/UI.Sheet.js"></script>
+	<script type="text/javascript" src="../Source/UI.Widget.js"></script>
+	<script type="text/javascript" src="../Source/ART.Widget.js"></script>
+	<script type="text/javascript" src="../Source/ART.Sheet.js"></script>
+	<script type="text/javascript" src="../Source/ART.Button.js"></script>
+	
+	<script type="text/javascript">
+	
+	UI.Sheet.define('button', {
+		'background-color': ['hsb(0, 0, 100)', 'hsb(0, 0, 85)'],
+		'border-color': ['hsb(0, 0, 60)', 'hsb(0, 0, 50)'],
+		'font-family': 'Moderna',
+		'font-size': 13,
+		'font-color': 'black'
+	});
+	
+	document.addEvent('domready', function(){
+		
+		window.gs = new ART.Button('Google Search', {className: 'button', id: 'GoogleSearch', tabIndex: 1});
+		
+		$(gs).inject($('container'));
+		
+		gs.addEvent('press', function(){
+			console.log('searching google...');
+		});
+		
+		window.fl = new ART.Button('I\'m Feeling Lucky', {className: 'button', id: 'FeelingLucky', tabIndex: 2});
+		
+		$(fl).inject($('container'));
+		
+		fl.addEvent('press', function(){
+			console.log('feeling lucky...');
+		});
+		
+	});
+		
+	</script>
+
+</head>
+
+<body>
+	
+	<div id="container"></div>
+	
+</body>
+</html>

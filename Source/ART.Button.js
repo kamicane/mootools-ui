@@ -141,14 +141,14 @@ var Button = ART.Button = new Class({
 		
 	},
 	
-	enable: function(flag){
-		if (!this.parent(flag)) return false;
+	enable: function(){
+		if (!this.parent()) return false;
 		this.touch.attach();
 		return true;
 	},
 	
-	disable: function(flag){
-		if (!this.parent(flag)) return false;
+	disable: function(){
+		if (!this.parent()) return false;
 		this.touch.detach();
 		return true;
 	}

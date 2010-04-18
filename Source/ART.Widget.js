@@ -16,11 +16,7 @@ var Widget = ART.Widget = new Class({
 	}
 });
 	
-var widgets = ART.widgets = [], changeState = function(flag){
-	if (!this.parent(flag)) return false;
-	this.deferDraw();
-	return true;
-};
+var widgets = ART.widgets = [];
 
 Widget.implement({
 	
@@ -37,11 +33,11 @@ Widget.implement({
 		this.element.addEvents({
 
 			focus: function(){
-				self.focus();
+				if (!self.isFocused()) self.focus();
 			},
 
 			blur: function(){
-				self.blur();
+				if (self.isFocused()) self.blur();
 			}
 			
 		});
@@ -113,28 +109,46 @@ Widget.implement({
 	
 	/* states */
 	
-	enable: function(flag){
-		if (!this.parent(flag)) return false;
+	enable: function(){
+		if (!this.parent()) return false;
 		this.setTabIndex(this.oldTabIndex);
 		this.deferDraw();
 		return true;
 	},
 	
-	disable: function(flag){
-		if (!this.parent(flag)) return false;
+	disable: function(){
+		if (!this.parent()) return false;
 		this.oldTabIndex = this.tabIndex;
 		this.setTabIndex(-1);
 		this.deferDraw();
 		return true;
 	},
 	
-	focus: changeState,
+	focus: function(){
+		if (!this.parent()) return false;
+		this.element.focus();
+		this.deferDraw();
+		return true;
+	},
 	
-	blur: changeState,
+	blur: function(){
+		if (!this.parent()) return false;
+		this.element.blur();
+		this.deferDraw();
+		return true;
+	},
 	
-	activate: changeState,
+	activate: function(){
+		if (!this.parent()) return false;
+		this.deferDraw();
+		return true;
+	},
 	
-	deactivate: changeState,
+	deactivate: function(){
+		if (!this.parent()) return false;
+		this.deferDraw();
+		return true;
+	},
 	
 	/* $ */
 	

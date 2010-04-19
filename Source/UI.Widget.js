@@ -9,7 +9,7 @@ provides: UI.Widget
 
 (function(){
 	
-var widgets = {}, UID = 0;
+var widgets = UI.widgets = {}, UID = 0;
 
 var Widget = UI.Widget = new Class({
 	
@@ -23,8 +23,10 @@ var Widget = UI.Widget = new Class({
 	},
 	
 	initialize: function(options){
-		var uid = ART.uniqueID();
-		widgets[uid] = this;
+		this.uid = ART.uniqueID();
+
+		this._parentWidget = null;
+		this._childWidgets = [];
 		
 		this.setOptions(options);
 		if (this.options.id) this.setID(this.options.id);
@@ -33,9 +35,6 @@ var Widget = UI.Widget = new Class({
 		if (this.options.className) this.options.className.split(' ').each(function(className){
 			this.addClass(className);
 		}, this);
-
-		this._parentWidget = null;
-		this._childWidgets = [];
 		
 		this.states = {disabled: false, focus: false, active: false};
 	},
@@ -66,8 +65,7 @@ var Widget = UI.Widget = new Class({
 	/* enable, disable */
 	
 	enable: function(){
-		var parentWidget = this.getParent();
-		if ((parentWidget && parentWidget.states.disabled) || !this.states.disabled) return false;
+		if ((this._parentWidget && this._parentWidget.isDisabled()) || !this.isDisabled()) return false;
 		this._disabledByParent = false;
 		this.states.disabled = false;
 		this.fireEvent('enable');
@@ -80,19 +78,19 @@ var Widget = UI.Widget = new Class({
 	},
 	
 	disable: function(){
-		if (this.states.disabled) return false;
+		if (this.isDisabled()) return false;
+		this.fireEvent('disable');
 		
 		this.blur();
-		this.deactivate();
-		this.states.disabled = true;
-		this.fireEvent('disable');
-					
+			
 		this._childWidgets.each(function(child){
 			if (!child.states.disabled){
 				child._disabledByParent = true;
 				child.disable();
 			}
 		});
+		
+		this.states.disabled = true;
 		
 		return true;
 	},
@@ -104,7 +102,7 @@ var Widget = UI.Widget = new Class({
 	/* focus, blur */
 	
 	focus: function(){
-		if (this.states.disabled || this.states.focus) return false;
+		if (this.isDisabled() || this.isFocused()) return false;
 		this.states.focus = true;
 		this.fireEvent('focus');
 		
@@ -117,8 +115,9 @@ var Widget = UI.Widget = new Class({
 	},
 	
 	blur: function(){
-		if (this.states.disabled || !this.states.focus) return false;
-
+		if (this.isDisabled() || !this.isFocused()) return false;
+		
+		this.deactivate();
 		this.states.focus = false;
 		this.fireEvent('blur');
 		
@@ -136,7 +135,7 @@ var Widget = UI.Widget = new Class({
 	/* activate, deactivate */
 	
 	activate: function(){
-		if (this.states.disabled || this.states.active) return false;
+		if (this.isDisabled() || this.isActive()) return false;
 		this.focus();
 		this.states.active = true;
 		
@@ -146,7 +145,7 @@ var Widget = UI.Widget = new Class({
 	},
 	
 	deactivate: function(){
-		if (this.states.disabled || !this.states.active) return false;
+		if (this.isDisabled() || !this.isActive()) return false;
 		this.states.active = false;
 		this.fireEvent('inactive');
 		
@@ -157,43 +156,31 @@ var Widget = UI.Widget = new Class({
 		return this.states.active;
 	},
 	
-	/* child & parent relationship */
+	/* child & parent relationship, registration */
 	
-	inject: function(widget){
-		var parentWidget = this.getParent();
-		if ((widget instanceof Widget) && parentWidget !== widget){
-			if (parentWidget) this.eject();
+	register: function(widget){
+		widgets[this.uid] = this;
+		
+		if (widget && (widget instanceof Widget) && this._parentWidget !== widget){
+			this._parentWidget && this._parentWidget._childWidgets.erase(this);
 			this._parentWidget = widget;
 			widget._childWidgets.push(this);
-			this.fireEvent('inject', widget);
 		}
+		
 		return this;
 	},
 	
-	eject: function(){
-		var parentWidget = this.getParent();
-		if (parentWidget){
-			parentWidget._childWidgets.erase(this);
-			this._parentWidget = null;
-			this.fireEvent('eject', parentWidget);
+	unregister: function(){
+		if (widgets[this.uid]){
+			delete widgets[this.uid];
+			this.blur();
+
+			if (this._parentWidget){
+				this._parentWidget._childWidgets.erase(this);
+				this._parentWidget = null;
+			}
 		}
 		return this;
-	},
-	
-	grab: function(){
-		for (var i = 0; i < arguments.length; i++){
-			var widget = arguments[i];
-			if ((widget instanceof Widget)) widget.inject(this);
-		}
-		return this;
-	},
-	
-	getParent: function(){
-		return this._parentWidget;
-	},
-	
-	getChildren: function(){
-		return this._childWidgets;
 	},
 	
 	/* Sheet integration */
@@ -231,7 +218,7 @@ Widget.prototype.toString = function(){
 		if (this.states[s]) string += ':' + s;
 	}
 	
-	var parentWidget = this.getParent();
+	var parentWidget = this._parentWidget;
 	if (parentWidget) string = parentWidget.toString() + ' ' + string;
 	
 	return string;

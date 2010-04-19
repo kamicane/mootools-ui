@@ -20,12 +20,15 @@ test('should create a new Class extending ART.Widget', function(){
 
 asyncTest('ART.Widget instances should call the method draw only once, even when multiple actions are called.', function(){
 	var wiggy = new g.MyWidget;
+	wiggy.inject(document.body);
 	wiggy.disable();
 	wiggy.enable();
 	wiggy.focus();
 	wiggy.blur();
 	wiggy.activate();
 	wiggy.deactivate();
+	
+	wiggy.eject();
 });
 
 test('ART.Widget should mirror classNames and ids to its element.', function(){

@@ -6,49 +6,39 @@ test('should create a few widgets with options', function(){
 	g.widget2 = new UI.Widget({name: 'button', id: 'buttonID2', className: 'super duper'});
 });
 
-// base inject / eject / grab
+// base register / unregister
 
-test('the injected widgets should have as parent the child widgets', function(){
-	g.widget1.inject(g.parentWidget);
-	g.widget2.inject(g.parentWidget);
+test('should be able to register with a parent widget', function(){
+	g.widget1.register(g.parentWidget);
+	g.widget2.register(g.parentWidget);
 	
-	equals(g.widget1.getParent() === g.parentWidget, true);
-	equals(g.widget2.getParent() === g.parentWidget, true);
+	equals(g.widget1._parentWidget === g.parentWidget, true);
+	equals(g.widget2._parentWidget === g.parentWidget, true);
 });
 
 test('the parent widget should have as children the child widgets', function(){
-	var children = g.parentWidget.getChildren();
+	var children = g.parentWidget._childWidgets;
 	
 	equals(children.length, 2);
 	equals(children.contains(g.widget1), true);
 	equals(children.contains(g.widget2), true);
 });
 
-test('the widget should be able to be ejected from whatever parent', function(){
-	g.widget1.eject();
-	g.widget2.eject();
-	equals(g.widget1.getParent(), null);
-	equals(g.widget2.getParent(), null);
+test('should unregister widgets', function(){
+	g.widget1.unregister();
+	g.widget2.unregister();
+	equals(g.widget1._parentWidget, null);
+	equals(g.widget2._parentWidget, null);
 	
-	var children = g.parentWidget.getChildren();
+	var children = g.parentWidget._childWidgets;
 	
 	equals(children.length, 0);
 	equals(children.contains(g.widget1), false);
 	equals(children.contains(g.widget2), false);
 	
-});
-
-test('the parent widget should be able to grab widgets', function(){
-	g.parentWidget.grab(g.widget1, g.widget2);
+	g.widget1.register(g.parentWidget);
+	g.widget2.register(g.parentWidget);
 	
-	equals(g.widget1.getParent() === g.parentWidget, true);
-	equals(g.widget2.getParent() === g.parentWidget, true);
-	
-	var children = g.parentWidget.getChildren();
-	
-	equals(children.length, 2);
-	equals(children.contains(g.widget1), true);
-	equals(children.contains(g.widget2), true);
 });
 
 // enable / disable

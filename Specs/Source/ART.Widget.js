@@ -12,6 +12,7 @@ test('should create a new Class extending ART.Widget', function(){
 			this.drawIndex++;
 			equals(this.drawIndex, 1);
 			start();
+			this.eject();
 		}
 
 	});
@@ -27,8 +28,6 @@ asyncTest('ART.Widget instances should call the method draw only once, even when
 	wiggy.blur();
 	wiggy.activate();
 	wiggy.deactivate();
-	
-	wiggy.eject();
 });
 
 test('ART.Widget should mirror classNames and ids to its element.', function(){

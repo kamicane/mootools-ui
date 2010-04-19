@@ -71,9 +71,7 @@ var Button = ART.Button = new Class({
 			},
 			
 			keyup: function(event){
-				if (event.key.match(/space|enter/)){
-					if (self.deactivate()) self.fireEvent('press');
-				}
+				if (event.key.match(/space|enter/) && self.deactivate()) self.fireEvent('press');
 			}
 
 		});
@@ -95,8 +93,7 @@ var Button = ART.Button = new Class({
 			}
 		
 		});
-		
-		this.deferDraw();
+
 	},
 	
 	draw: function(newSheet){

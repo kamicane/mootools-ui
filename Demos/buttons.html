@@ -45,7 +45,7 @@
 		
 		window.gs = new ART.Button('Google Search', {className: 'button', id: 'GoogleSearch', tabIndex: 1});
 		
-		$(gs).inject($('container'));
+		gs.inject($('container'));
 		
 		gs.addEvent('press', function(){
 			console.log('searching google...');
@@ -53,7 +53,7 @@
 		
 		window.fl = new ART.Button('I\'m Feeling Lucky', {className: 'button', id: 'FeelingLucky', tabIndex: 2});
 		
-		$(fl).inject($('container'));
+		fl.inject($('container'));
 		
 		fl.addEvent('press', function(){
 			console.log('feeling lucky...');

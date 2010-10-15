@@ -61,7 +61,7 @@ var Widget = ART.Widget = new Class({
 	},
 	
 	draw: function(newSheet){
-		var sheet = $merge(this.diffSheet(), newSheet || {});
+		var sheet = Object.merge(this.diffSheet(), newSheet || {});
 		for (var property in sheet) this.currentSheet[property] = sheet[property];
 		return sheet;
 	},

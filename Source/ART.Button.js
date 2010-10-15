@@ -124,11 +124,11 @@ var Button = ART.Button = new Class({
 			this.textLayer.translate(cs.padding[3], cs.padding[0]);
 		}
 		
-		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, $splat(sheet.shadowColor));
-		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, $splat(sheet.borderColor));
-		if (sheet.reflectionColor) this.reflectionLayer.fill.apply(this.reflectionLayer, $splat(sheet.reflectionColor));
-		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(sheet.backgroundColor));
-		if (sheet.fontColor) this.textLayer.fill.apply(this.textLayer, $splat(sheet.fontColor));
+		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, Array.from(sheet.shadowColor));
+		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, Array.from(sheet.borderColor));
+		if (sheet.reflectionColor) this.reflectionLayer.fill.apply(this.reflectionLayer, Array.from(sheet.reflectionColor));
+		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, Array.from(sheet.backgroundColor));
+		if (sheet.fontColor) this.textLayer.fill.apply(this.textLayer, Array.from(sheet.fontColor));
 		
 		return this;
 		

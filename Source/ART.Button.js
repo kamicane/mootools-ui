@@ -2,7 +2,7 @@
 ---
 name: ART.Button
 description: Base Button Class
-requires: [UI.Sheet, UI.Widget, ART.Widget, Core/Class, Core/Element, Core/Element.Events, ART/ART.Rectangle, ART/ART.Font]
+requires: [UI.Sheet, UI.Widget, ART.Widget, Core/Class, Core/Element, Core/Element.Event, ART/ART.Rectangle, ART/ART.Font]
 provides: ART.Button
 ...
 */
@@ -75,24 +75,20 @@ var Button = ART.Button = new Class({
 			}
 
 		});
-		
-		this.touch = new Touch(this.element);
-		
-		this.touch.addEvents({
+
+		this.bound = {
 			
-			start: function(){
+			mousedown: function(){
 				self.activate();
 			},
 			
-			end: function(){
-				self.deactivate();
-			},
-			
-			cancel: function(){
+			mouseup: function(){
 				if (self.deactivate()) self.fireEvent('press');
 			}
 		
-		});
+		};
+
+		this.attach();
 
 	},
 	
@@ -140,14 +136,22 @@ var Button = ART.Button = new Class({
 	
 	enable: function(){
 		if (!this.parent()) return false;
-		this.touch.attach();
+		this.attach();
 		return true;
 	},
 	
 	disable: function(){
 		if (!this.parent()) return false;
-		this.touch.detach();
+		this.detach();
 		return true;
+	},
+
+	attach: function(){
+		this.element.addEvents(this.bound);
+	},
+
+	detach: function(){
+		this.element.removeEvents(this.bound);
 	}
 	
 });

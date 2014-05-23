@@ -2,7 +2,7 @@
 ---
 name: ART.Button
 description: Base Button Class
-requires: [UI.Sheet, UI.Widget, ART.Widget, Core/Class, Core/Element, Core/Element.Events, ART/ART.Rectangle, ART/ART.Font]
+requires: [UI.Sheet, UI.Widget, ART.Widget, Core/Class, Core/Element, Core/Element.Event, ART/ART.Rectangle, ART/ART.Font]
 provides: ART.Button
 ...
 */
@@ -75,24 +75,20 @@ var Button = ART.Button = new Class({
 			}
 
 		});
-		
-		this.touch = new Touch(this.element);
-		
-		this.touch.addEvents({
+
+		this.bound = {
 			
-			start: function(){
+			mousedown: function(){
 				self.activate();
 			},
 			
-			end: function(){
-				self.deactivate();
-			},
-			
-			cancel: function(){
+			mouseup: function(){
 				if (self.deactivate()) self.fireEvent('press');
 			}
 		
-		});
+		};
+
+		this.attach();
 
 	},
 	
@@ -128,11 +124,11 @@ var Button = ART.Button = new Class({
 			this.textLayer.translate(cs.padding[3], cs.padding[0]);
 		}
 		
-		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, $splat(sheet.shadowColor));
-		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, $splat(sheet.borderColor));
-		if (sheet.reflectionColor) this.reflectionLayer.fill.apply(this.reflectionLayer, $splat(sheet.reflectionColor));
-		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, $splat(sheet.backgroundColor));
-		if (sheet.fontColor) this.textLayer.fill.apply(this.textLayer, $splat(sheet.fontColor));
+		if (sheet.shadowColor) this.shadowLayer.fill.apply(this.shadowLayer, Array.from(sheet.shadowColor));
+		if (sheet.borderColor) this.borderLayer.fill.apply(this.borderLayer, Array.from(sheet.borderColor));
+		if (sheet.reflectionColor) this.reflectionLayer.fill.apply(this.reflectionLayer, Array.from(sheet.reflectionColor));
+		if (sheet.backgroundColor) this.backgroundLayer.fill.apply(this.backgroundLayer, Array.from(sheet.backgroundColor));
+		if (sheet.fontColor) this.textLayer.fill.apply(this.textLayer, Array.from(sheet.fontColor));
 		
 		return this;
 		
@@ -140,14 +136,22 @@ var Button = ART.Button = new Class({
 	
 	enable: function(){
 		if (!this.parent()) return false;
-		this.touch.attach();
+		this.attach();
 		return true;
 	},
 	
 	disable: function(){
 		if (!this.parent()) return false;
-		this.touch.detach();
+		this.detach();
 		return true;
+	},
+
+	attach: function(){
+		this.element.addEvents(this.bound);
+	},
+
+	detach: function(){
+		this.element.removeEvents(this.bound);
 	}
 	
 });

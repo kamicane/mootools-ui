@@ -76,7 +76,7 @@ Sheet.lookup = function(selector){
 				if (containsAll(selector[j], rule.selector[i])) break;
 			}
 		}
-		$mixin(style, rule.style);
+		Object.merge(style, rule.style);
 	});
 	return style;
 };

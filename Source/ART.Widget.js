@@ -2,7 +2,7 @@
 ---
 name: ART.Widget
 description: ART Widget Class
-requires: [UI.Widget, Core/Class, Core/Element, Core/Element.Events, ART/ART.Base]
+requires: [UI.Widget, Core/Class, Core/Element, Core/Element.Event, ART/ART.Base]
 provides: ART.Widget
 ...
 */
@@ -61,7 +61,7 @@ var Widget = ART.Widget = new Class({
 	},
 	
 	draw: function(newSheet){
-		var sheet = $merge(this.diffSheet(), newSheet || {});
+		var sheet = Object.merge(this.diffSheet(), newSheet || {});
 		for (var property in sheet) this.currentSheet[property] = sheet[property];
 		return sheet;
 	},
